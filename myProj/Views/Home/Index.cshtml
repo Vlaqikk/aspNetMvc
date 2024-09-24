@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Web.Helpers;
+
+@model IEnumerable<myProj.Models.ResultType>
+
+<h2>Фильтрация и cортировка филиалов</h2>
+<input type="text" id="search" placeholder="Поиск по филиалу">
+<button id="sortAsc">Сортировать по возрастанию</button>
+<button id="sortDesc">Сортировать по убыванию</button>
+
+<table id="dataTable">
+    <thead>
+        <tr>
+            <th>филиал</th>
+            <th>Все Филиалы</th>
+            <th>Компания Филиала</th>
+            <th>Тип</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RequestedBranchName</td>
+                <td>@item.BranchName</td>
+                <td>@item.CompanyName</td>
+                <td>@item.Kind</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var originalData = @Html.Raw(Json.Encode(Model));
+
+            $('#search').on('input', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                var filteredData = originalData.filter(function (item) {
+                    return item.RequestedBranchName.toLowerCase().includes(searchTerm);
+                });
+                updateTable(filteredData);
+            });
+
+            $('#sortAsc').on('click', function () {
+                var sortedData = originalData.sort((a, b) => a.RequestedBranchName.localeCompare(b.RequestedBranchName));
+                updateTable(sortedData);
+            });
+
+            $('#sortDesc').on('click', function () {
+                var sortedData = originalData.sort((a, b) => b.RequestedBranchName.localeCompare(a.RequestedBranchName));
+                updateTable(sortedData);
+            });
+
+            function updateTable(data) {
+                var tbody = $('#dataTable tbody');
+                tbody.empty();
+                data.forEach(function (item) {
+                    tbody.append('<tr><td>' + item.RequestedBranchName + '</td><td>' + item.BranchName + '</td><td>' + item.CompanyName + '</td><td>' + item.Kind + '</td></tr>');
+                });
+            }
+        });
+    </script>
+}
