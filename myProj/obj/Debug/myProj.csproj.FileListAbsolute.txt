@@ -88,3 +88,5 @@ C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.csproj.CoreCompileI
 C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.csproj.CopyComplete
 C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.dll
 C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.pdb
+C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.Migrations.Create.resources
+C:\Users\Vlaqikk\source\repos\myProj\myProj\obj\Debug\myProj.csproj.GenerateResource.cache
