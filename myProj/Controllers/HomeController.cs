@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using myProj.Models;
+using System.Diagnostics;
 
 namespace myProj.Controllers
 {
@@ -17,67 +18,34 @@ namespace myProj.Controllers
             db = context;
         }
 
-        public HomeController() : this(new ComContext()) 
+        public HomeController() : this(new ComContext())
         {
         }
 
+
+
         public ActionResult Index()
         {
-            var table = new List<Main>();
-            var res = new List<ResultType>();
-            var companiesBranches = db.CompaniesBranches.ToList();
+            var companiesBranches = db.CompaniesBranchesT
+                .Include(cb => cb.Companies)
+                .ToList();
 
-            foreach (var branch in companiesBranches)
-            {
-                var company = db.Companies
-                    .Where(c => c.Name == branch.CompanyId && (c.Kind == "1" || c.Kind == "2"))
-                    .Select(c => new
+            var dtoList = companiesBranches
+                .SelectMany(item =>
+                    companiesBranches
+                    .Where(el => (el.Companies.Name == item.Companies.Name && el.Companies.Kind == 1) ||
+                                 (el.Companies.Kind == item.Companies.Kind && el.Companies.Kind == 2))
+                    .Select(el => new DTO.Res
                     {
-                        BranchName = branch.Name,
-                        CompanyName = c.Name,
-                        Kind = c.Kind
+                        RequestedBranchName = item.Name,
+                        BranchName = el.Name,
+                        CompanyName = item.Companies.Name,
+                        Kind = item.Companies.Kind
                     })
-                    .FirstOrDefault();
+                )
+                .ToList();
 
-                if (company != null)
-                {
-                    table.Add(new Main
-                    {
-                        BranchName = company.BranchName,
-                        CompanyName = company.CompanyName,
-                        Kind = company.Kind
-                    });
-                }
-            }
-
-            foreach (var company in table)
-            {
-                foreach (var tab in table)
-                {
-                    if (company.Kind == Char.ToString('1') && tab.CompanyName == company.CompanyName)
-                    {
-                        res.Add(new ResultType
-                        {
-                            RequestedBranchName = company.BranchName,
-                            BranchName = tab.BranchName,
-                            CompanyName = tab.CompanyName,
-                            Kind = tab.Kind
-                        });
-                    }
-                    else if (company.Kind == Char.ToString('2') && tab.Kind == Char.ToString('2'))
-                    {
-                        res.Add(new ResultType
-                        {
-                            RequestedBranchName = company.BranchName,
-                            BranchName = tab.BranchName,
-                            CompanyName = tab.CompanyName,
-                            Kind = company.Kind
-                        });
-                    }
-                }
-            }
-
-            return View(res);
+            return View(dtoList);
         }
     }
 }

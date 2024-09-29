@@ -11,7 +11,7 @@ namespace myProj.Models
         public ComContext() : base("Conn")
         {
         }
-        public DbSet<Companies> Companies { get; set; }
-        public DbSet<CompaniesBranches> CompaniesBranches { get; set; }
+        public DbSet<Companies> CompaniesT { get; set; }
+        public DbSet<CompaniesBranches> CompaniesBranchesT { get; set; }
     }
 }

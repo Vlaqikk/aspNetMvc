@@ -9,7 +9,7 @@ namespace myProj.Models
     {
         public string BranchName { get; set; }
         public string CompanyName { get; set; }
-        public string Kind { get; set; }
+        public int Kind { get; set; }
 
         public Main() { }
     }
